@@ -32,7 +32,7 @@ function numAction(x, action){
 }
 let x = {value1 : '', value2 : '', action : ''};
 export default function App() {
-  console.log("App Up")
+  console.log("App Start")
   return (
     <View>
       <View style={styles.viewRows}>
