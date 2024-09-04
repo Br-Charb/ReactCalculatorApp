@@ -25,11 +25,12 @@ function numAction(x, action){
   } else if(action == "*"){
     x.value1 *= x.value2;
     x.action = ""; x.value2;
-  }else{
+  } else if (action == "^2"){
+    x.value1 *= x.value1
+  } else{
     x.value1 /= x.value2;
     x.action = ""; x.value2;
   }
-  // console.log(x.value1);
   console.log(x)
 }
 let x = {value1 : 0, value2 : 0, action : ''};
@@ -38,11 +39,17 @@ export default function App() {
   return (
     <SafeAreaView>
       <SafeAreaView style={styles.viewRows}>
+      <Text style={styles.textSpacing} onPress={() => x = {value1 : 0, value2 : 0, action : ''}}>c</Text>
+        <Text style={styles.textSpacing} onPress={() => addTo(x, "7")}>⌫</Text>
+        <Text style={styles.textSpacing} onPress={() => numAction(x, "^2")}>^2</Text>
+        <Text style={styles.textSpacing} onPress={() => x.action = "/"}>/</Text>
+        <StatusBar style="auto" />
+      </SafeAreaView>
+      <SafeAreaView style={styles.viewRows}>
         <Text style={styles.textSpacing} onPress={() => addTo(x, "7")}>7</Text>
         <Text style={styles.textSpacing} onPress={() => addTo(x, "8")}>8</Text>
         <Text style={styles.textSpacing} onPress={() => addTo(x, "9")}>9</Text>
         <Text style={styles.textSpacing} onPress={() => x.action = "*"}>x</Text>
-        <StatusBar style="auto" />
         <StatusBar style="auto" />
       </SafeAreaView>
       <SafeAreaView style={styles.viewRows}>
