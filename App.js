@@ -6,122 +6,102 @@ import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 
 let x = {value1 : '', value2 : '', action : ''};
-const Chunk = ({text1, text2, text3, text4}) => {
+const Chunk = ({text1, text2, text3, text4, action1, action2, action3, action4}) => {
   return (
     <View style={styles.viewRows}>
-      <Text style={styles.textSpacing} onPress={() => applyAction(x, 'c')}>{text1}</Text>
-      <Text style={styles.textSpacing} onPress={() => applyAction(x, "")}>{text2}</Text>
-      <Text style={styles.textSpacing} onPress={() => applyAction(x, "^")}>{text3}</Text>
-      <Text style={styles.textSpacing} onPress={() => applyAction(x, "/")}>{text4}</Text>
-      <StatusBar style="auto" />
+      <CButton text = {text1} action = {action1}></CButton>
+      <CButton text = {text2} action = {action2}></CButton>
+      <CButton text = {text3} action = {action3}></CButton>
+      <CButton text = {text4} action = {action4}></CButton>
     </View>
   )
 }
-function addTo(x, num){
-  if (x.action == ''){
-    if(x.value1 == '0' && num != "."){
-      x.value1 = String(num);
-    } else{
-      x.value1 = String(x.value1) + num;
-    }
-  }else{
-    x.value2 = String(x.value2) + num;
-  }
-  changeText();
-  console.log(x);
-}
-function applyAction(x, action){
-if (action == "c"){
-  x.value1 = '0';
-  x.value2 = '';
-  x.action = '';
-} else{
-  x.action = action;
-}
-console.log(x)
-changeText();
-
-}
-function numAction(x, action){
-  x.value1 = Number(x.value1);
-  x.value2 = Number(x.value2);
-  if (action == "±"){
-    if (x.action == ''){  
-      x.value1 *= -1;
-    }else{
-      x.value2 *= -1;
-    }
-  } else if(action == "-"){
-    x.value1 -= Number(x.value2);
-    x.action = ""; x.value2 = "";
-  } else if(action == "+"){
-    x.value1 += Number(x.value2);
-    x.action = ""; x.value2 = "";
-  } else if(action == "x"){
-    x.value1 *= x.value2;
-    x.action = ""; x.value2 = "";
-  } else if (action == "^"){
-    x.value1 = x.value1 ** x.value2;
-    x.action = ""; x.value2 = "";
-  } else{
-    x.value1 /= x.value2;
-    x.action = ""; x.value2 = "";
-  }
-  changeText();
-  console.log(x)
-}
-const [r, setText] = useState('0');
-const changeText = () => {
-  setText(String(x.value1) + String(x.action) + String(x.value2))
+const CButton = ({text, action}) => {
+  return(
+    <Text style={styles.textSpacing} onPress={() => action(x, text)}>{text}</Text>
+  )
 }
 export default function App() {
+  const [r, setText] = useState('0');
+  const changeText = () => {
+    setText(String(x.value1) + String(x.action) + String(x.value2))
+  }
+  function del(x, action){
+    if (x.value2 == ''){
+      if (x.action == ''){x.value1 = x.value1.substring(0, x.value1.length - 1);} 
+      else{x.action = '';}
+    } else {x.value2 = x.value2.substring(0, x.value2.length - 1);}
+    changeText();
+    console.log(x);
+  }
+  function addTo(x, num){
+    if (x.action == ''){
+      if(x.value1 == '0' && num != "."){
+        x.value1 = String(num);
+      } else{
+        x.value1 = String(x.value1) + num;
+      }
+    }else{
+      x.value2 = String(x.value2) + num;
+    }
+    changeText();
+    console.log(x);
+  }
+  function reset(x, action){
+    x = {value1 : '0', value2 : '', action : ''};
+    changeText();
+    console.log(x);
+  }
+  function applyAction(x, action){
+    x.action = action;
+    changeText();
+    console.log(x)
+  }
+  function numAction(x, action){
+    x.value1 = Number(x.value1);
+    if (x.action != '' && x.value2 != '' && action != "±"){
+      if (action == "±"){
+        if (x.action == ''){  
+          x.value1 *= -1;
+        }else{
+          x.value2 = Number(x.value2);
+          x.value2 *= -1;
+        }
+      } else if(x.action == "-"){
+        x.value1 -= Number(x.value2);
+        x.action = ""; x.value2 = "";
+      } else if(x.action == "+"){
+        x.value1 += Number(x.value2);
+        x.action = ""; x.value2 = "";
+      } else if(x.action == "x"){
+        x.value1 *= x.value2;
+        x.action = ""; x.value2 = "";
+      } else if (x.action == "^"){
+        x.value1 = x.value1 ** x.value2;
+        x.action = ""; x.value2 = "";
+      } else{
+        x.value1 /= x.value2;
+        x.action = ""; x.value2 = "";
+      }
+      changeText();
+      console.log(x)
+    }
+  }
   console.log("App Start")
-  return (
+return (
     <SafeAreaView>
-      {/* <ScrollView> */}
         <View style={styles.viewRows}>
           <Text style={styles.textSpacing}>Benjamin's Calc</Text>
         </View>
         <View style={styles.viewRows}>
           <Text style={styles.textSpacing}>{r}</Text>
         </View>
-          <Chunk text1="c" text2="⌫" text3="^x" text4="/"></Chunk>
-        {/* <View style={styles.viewRows}>
-          <Text style={styles.textSpacing} onPress={() => applyAction(x, 'c')}>c</Text>
-          <Text style={styles.textSpacing} onPress={() => applyAction(x, "")}>⌫</Text>
-          <Text style={styles.textSpacing} onPress={() => applyAction(x, "^")}>^x</Text>
-          <Text style={styles.textSpacing} onPress={() => applyAction(x, "/")}>/</Text>
-          <StatusBar style="auto" />
-        </View> */}
-        <View style={styles.viewRows}>
-          <Text style={styles.textSpacing} onPress={() => addTo(x, "7")}>7</Text>
-          <Text style={styles.textSpacing} onPress={() => addTo(x, "8")}>8</Text>
-          <Text style={styles.textSpacing} onPress={() => addTo(x, "9")}>9</Text>
-          <Text style={styles.textSpacing} onPress={() => applyAction(x, "x")}>x</Text>
-          <StatusBar style="auto" />
-        </View>
-        <View style={styles.viewRows}>
-          <Text style={styles.textSpacing} onPress={() => addTo(x, "4")}>4</Text>
-          <Text style={styles.textSpacing} onPress={() => addTo(x, "5")}>5</Text>
-          <Text style={styles.textSpacing} onPress={() => addTo(x, "6")}>6</Text>
-          <Text style={styles.textSpacing} onPress={() => applyAction(x, "-")}>-</Text>
-          <StatusBar style="auto" />
-        </View>
-        <View style={styles.viewRows}>
-          <Text style={styles.textSpacing} onPress={() => addTo(x, "1")}>1</Text>
-          <Text style={styles.textSpacing} onPress={() => addTo(x, "2")}>2</Text>
-          <Text style={styles.textSpacing} onPress={() => addTo(x, "3")}>3</Text>
-          <Text style={styles.textSpacing} onPress={() => applyAction(x, "+")}>+</Text>
-          <StatusBar style="auto" />
-        </View>
-        <View style={styles.viewRows}>
-          <Text style={styles.textSpacing} onPress={() => numAction(x, "±")}>±</Text>
-          <Text style={styles.textSpacing} onPress={() => addTo(x, "0")}>0</Text>
-          <Text style={styles.textSpacing} onPress={() => addTo(x, ".")}>.</Text>
-          <Text style={styles.textSpacing} onPress={() => numAction(x, x.action)}>=</Text>
-          <StatusBar style="auto" />
-        </View>
-      {/* </ScrollView> */}
+        <Chunk text1='c' text2='⌫' text3='^' text4='/' action1 = {reset} action2 = {del} action3 = {applyAction} action4 = {applyAction}></Chunk>
+        <Chunk text1='7' text2='8' text3='9' text4='x' action1 = {addTo} action2 = {addTo} action3 = {addTo} action4 = {applyAction}></Chunk>
+        <Chunk text1='4' text2='5' text3='6' text4='-' action1 = {addTo} action2 = {addTo} action3 = {addTo} action4 = {applyAction}></Chunk>
+        <Chunk text1='1' text2='2' text3='3' text4='+' action1 = {addTo} action2 = {addTo} action3 = {addTo} action4 = {applyAction}></Chunk>
+        <Chunk text1='±' text2='0' text3='.' text4='=' action1 = {numAction} action2 = {addTo} action3 = {addTo} action4 = {numAction}></Chunk>
+        <StatusBar style="auto" />
     </SafeAreaView>
   );
 }
